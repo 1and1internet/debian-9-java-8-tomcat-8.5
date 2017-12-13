@@ -54,7 +54,7 @@ class Test1and1Java8Tomcat85Image(unittest.TestCase):
 
     def test_docker_logs(self):
         expected_log_lines = [
-            "Process 'java_server_runner' changed state to 'RUNNING'"",
+            "Process 'java_server_runner' changed state to 'RUNNING'",
             "Applying tomcat config",
             "Starting tomcat server",
             "org.apache.catalina.startup.Catalina.start Server startup"
