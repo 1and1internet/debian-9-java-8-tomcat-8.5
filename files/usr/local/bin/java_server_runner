@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+function tomcat_config {
+    echo "Applying tomcat config"
+    for envar in TC_MGR_GUI_USER \
+                 TC_MGR_GUI_PASS \
+                 TC_MGR_SCRIPT_USER \
+                 TC_MGR_SCRIPT_PASS \
+                 TC_MGR_JMX_USER \
+                 TC_MGR_JMX_PASS \
+                 TC_MGR_STATUS_USER \
+                 TC_MGR_STATUS_PASS \
+                 TC_ADMIN_GUI_USER \
+                 TC_ADMIN_GUI_PASS \
+                 TC_ADMIN_SCRIPT_USER \
+                 TC_ADMIN_SCRIPT_PASS
+    do
+        eval value=\$$envar
+        find /opt/tomcat/ -type f -exec sed -i "s/<$envar>/$value/g" {} \;
+    done
+
+    cp -ruv /opt/tomcat/* /usr/share/tomcat/
+}
+
+JARFILE=$(find /var/www -type f -name "*.jar" -print -quit)
+
+if [ -z $JARFILE ]; then
+    tomcat_config
+
+    echo "Starting tomcat server..."
+    /usr/share/tomcat/bin/catalina.sh run
+    # The above always exits with 0, which is probably not what we want
+    exit 1
+else
+    echo "Running java -jar $JARFILE"
+    java -jar $JARFILE
+fi
