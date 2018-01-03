@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+function tomcat_webapps {
+    if [ ! -d /var/www/webapps ]; then
+        cp -R /opt/apache-tomcat-*/webapps /var/www
+    fi
+}
+
 function tomcat_config {
     echo "Applying tomcat config"
     for envar in TC_MGR_GUI_USER \
@@ -19,17 +25,20 @@ function tomcat_config {
         find /opt/tomcat/ -type f -exec sed -i "s/<$envar>/$value/g" {} \;
     done
 
-    cp -ruv /opt/tomcat/* /usr/share/tomcat/
+    cp -ruv /opt/tomcat/conf/* /usr/share/tomcat/conf
+    cp -ruv /opt/tomcat/webapps/* /var/www/webapps/
 }
 
-JARFILE=$(find /var/www -type f -name "*.jar" -print -quit)
+JARFILE=$(find /var/www -not -path "/var/www/webapps/*" -type f -name "*.jar" -print -quit)
 
 if [ -z $JARFILE ]; then
+    tomcat_webapps
     tomcat_config
 
     echo "Starting tomcat server..."
     /usr/share/tomcat/bin/catalina.sh run
     # The above always exits with 0, which is probably not what we want
+    # as it's supposed to run forever
     exit 1
 else
     echo "Running java -jar $JARFILE"

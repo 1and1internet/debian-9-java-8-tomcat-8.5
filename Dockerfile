@@ -11,8 +11,9 @@ RUN apt-get update \
     && tar zxvf apache-tomcat-${TOMCAT_VER}.tar.gz \
     && rm -rf apache-tomcat-${TOMCAT_VER}.tar.gz \
     && ln -sf /opt/apache-tomcat-${TOMCAT_VER} /usr/share/tomcat \
+    && sed -i 's|appBase="webapps"|appBase="/var/www/webapps"|' /opt/apache-tomcat-${TOMCAT_VER}/conf/server.xml \
     && chmod +x /usr/share/tomcat/bin/*.sh /usr/local/bin/* \
-    && dpkg -i /opt/tomcat8_8.5.24_all.deb \
+    && dpkg -i /opt/tomcat8_${TOMCAT_VER}_all.deb \
     && apt-get remove wget \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \

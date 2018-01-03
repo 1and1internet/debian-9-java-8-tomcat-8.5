@@ -63,7 +63,7 @@ class Test1and1Java8Tomcat85Image(unittest.TestCase):
                 msg="Docker log line missing: %s from (%s)" % (expected_log_line, container_logs)
             )
 
-    def test_openjdk(self):
+    def test_tomcat8_installed(self):
         self.assertPackageIsInstalled("tomcat8")
 
     def test_default_app(self):
