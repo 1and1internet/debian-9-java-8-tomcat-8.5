@@ -29,18 +29,11 @@ function tomcat_config {
     cp -ruv /opt/tomcat/webapps/* /var/www/webapps/
 }
 
-JARFILE=$(find /var/www -not -path "/var/www/webapps/*" -type f -name "*.jar" -print -quit)
+tomcat_webapps
+tomcat_config
 
-if [ -z $JARFILE ]; then
-    tomcat_webapps
-    tomcat_config
-
-    echo "Starting tomcat server..."
-    /usr/share/tomcat/bin/catalina.sh run
-    # The above always exits with 0, which is probably not what we want
-    # as it's supposed to run forever
-    exit 1
-else
-    echo "Running java -jar $JARFILE"
-    java -jar $JARFILE
-fi
+echo "Starting tomcat server..."
+/usr/share/tomcat/bin/catalina.sh run
+# The above always exits with 0, which is probably not what we want
+# as it's supposed to run forever
+exit 1
