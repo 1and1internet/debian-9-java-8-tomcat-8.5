@@ -30,5 +30,4 @@ ENV TC_MGR_GUI_USER=tcmgrgui \
     TC_ADMIN_GUI_USER=tcadminmgrgui \
     TC_ADMIN_GUI_PASS=tcadminmgrguipass \
     TC_ADMIN_SCRIPT_USER=tcadminmgrscript \
-    TC_ADMIN_SCRIPT_PASS=tcadminmgrscriptpass \
-    MAX_HEAP_SIZE_XMX=2048m
+    TC_ADMIN_SCRIPT_PASS=tcadminmgrscriptpass
