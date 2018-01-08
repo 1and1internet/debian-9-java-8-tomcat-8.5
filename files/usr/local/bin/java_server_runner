@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+function memory_limits {
+    # If limits have not been passed to us then try to discover them
+    if [ -z $MAX_HEAP_SIZE_XMX ]; then
+        if [ -f /sys/fs/cgroup/memory/memory.max_usage_in_bytes ]; then
+            MEMLIM=$(cat /sys/fs/cgroup/memory/memory.max_usage_in_bytes)
+            export MAX_HEAP_SIZE_XMX=$(expr $MEMLIM / 1024 / 1024)m
+            echo "INFO: Imposing memory limit of $MAX_HEAP_SIZE_XMX"
+        else
+            export MAX_HEAP_SIZE_XMX=512m
+            echo "WARNING: Imposing default memory limit of $MAX_HEAP_SIZE_XMX"
+        fi
+    fi
+}
+
 function tomcat_webapps {
     if [ ! -d /var/www/webapps ]; then
         cp -R /opt/apache-tomcat-*/webapps /var/www
@@ -19,16 +33,19 @@ function tomcat_config {
                  TC_ADMIN_GUI_USER \
                  TC_ADMIN_GUI_PASS \
                  TC_ADMIN_SCRIPT_USER \
-                 TC_ADMIN_SCRIPT_PASS
+                 TC_ADMIN_SCRIPT_PASS \
+                 MAX_HEAP_SIZE_XMX
     do
         eval value=\$$envar
         find /opt/tomcat/ -type f -exec sed -i "s/<$envar>/$value/g" {} \;
     done
 
     cp -ruv /opt/tomcat/conf/* /usr/share/tomcat/conf
+    cp -ruv /opt/tomcat/bin/* /usr/share/tomcat/bin
     cp -ruv /opt/tomcat/webapps/* /var/www/webapps/
 }
 
+memory_limits
 tomcat_webapps
 tomcat_config
 
