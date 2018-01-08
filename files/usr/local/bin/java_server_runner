@@ -17,12 +17,6 @@ function memory_limits {
     fi
 }
 
-function tomcat_webapps {
-    if [ ! -d /var/www/webapps ]; then
-        cp -R /opt/apache-tomcat-*/webapps /var/www
-    fi
-}
-
 function tomcat_config {
     echo "Applying tomcat config"
     for envar in TC_MGR_GUI_USER \
@@ -43,13 +37,14 @@ function tomcat_config {
         find /opt/tomcat/ -type f -exec sed -i "s/<$envar>/$value/g" {} \;
     done
 
-    cp -ruv /opt/tomcat/conf/* /usr/share/tomcat/conf
-    cp -ruv /opt/tomcat/bin/* /usr/share/tomcat/bin
-    cp -ruv /opt/tomcat/webapps/* /var/www/webapps/
+    cp -ruv /opt/tomcat/* /usr/share/tomcat
+
+    [ -d /var/www/temp ] || mkdir -p /var/www/temp
+    [ -d /var/www/conf ] || cp -r /usr/share/tomcat/conf /var/www/
+    [ -d /var/www/webapps ] || cp -r /usr/share/tomcat/webapps /var/www/
 }
 
 memory_limits
-tomcat_webapps
 tomcat_config
 
 echo "Starting tomcat server..."

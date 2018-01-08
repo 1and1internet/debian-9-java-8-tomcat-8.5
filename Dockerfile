@@ -11,7 +11,6 @@ RUN apt-get update \
     && tar zxvf apache-tomcat-${TOMCAT_VER}.tar.gz \
     && rm -rf apache-tomcat-${TOMCAT_VER}.tar.gz \
     && ln -sf /opt/apache-tomcat-${TOMCAT_VER} /usr/share/tomcat \
-    && sed -i 's|appBase="webapps"|appBase="/var/www/webapps"|' /opt/apache-tomcat-${TOMCAT_VER}/conf/server.xml \
     && chmod +x /usr/share/tomcat/bin/*.sh /usr/local/bin/* \
     && dpkg -i /opt/tomcat8_${TOMCAT_VER}_all.deb \
     && apt-get remove wget \
@@ -30,4 +29,5 @@ ENV TC_MGR_GUI_USER=tcmgrgui \
     TC_ADMIN_GUI_USER=tcadminmgrgui \
     TC_ADMIN_GUI_PASS=tcadminmgrguipass \
     TC_ADMIN_SCRIPT_USER=tcadminmgrscript \
-    TC_ADMIN_SCRIPT_PASS=tcadminmgrscriptpass
+    TC_ADMIN_SCRIPT_PASS=tcadminmgrscriptpass \
+    CATALINA_BASE=/var/www
