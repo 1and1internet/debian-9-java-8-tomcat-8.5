@@ -4,6 +4,7 @@ import unittest
 import os
 import docker
 from selenium import webdriver
+import time
 
 
 class Test1and1Java8Tomcat85Image(unittest.TestCase):
@@ -28,6 +29,8 @@ class Test1and1Java8Tomcat85Image(unittest.TestCase):
 
         details = docker.APIClient().inspect_container(container=Test1and1Java8Tomcat85Image.container.id)
         Test1and1Java8Tomcat85Image.container_ip = details['NetworkSettings']['IPAddress']
+        # Give the container time to spin up or we may fail a test due to a race
+        time.sleep(3)
 
     @classmethod
     def tearDownClass(cls):
@@ -51,9 +54,8 @@ class Test1and1Java8Tomcat85Image(unittest.TestCase):
 
     def test_docker_logs(self):
         expected_log_lines = [
-            "Process 'java_server_runner' changed state to 'RUNNING'",
+            "Process 'catalina' changed state to 'RUNNING'",
             "Applying tomcat config",
-            "Starting tomcat server",
             "org.apache.catalina.startup.Catalina.start Server startup"
         ]
         container_logs = self.container.logs().decode('utf-8')
@@ -66,7 +68,7 @@ class Test1and1Java8Tomcat85Image(unittest.TestCase):
     def test_tomcat8_installed(self):
         self.assertPackageIsInstalled("tomcat8")
 
-    def test_default_app(self):
+    def test_tomcat(self):
         driver = webdriver.PhantomJS()
         driver.get("http://%s:8080/" % Test1and1Java8Tomcat85Image.container_ip)
         self.assertEqual('Apache Tomcat/8.5.24', driver.title)
