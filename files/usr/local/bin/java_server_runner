@@ -3,8 +3,8 @@
 function memory_limits {
     # If limits have not been passed to us then try to discover them
     if [ -z $MAX_HEAP_SIZE_XMX ]; then
-        if [ -f /sys/fs/cgroup/memory/memory.max_usage_in_bytes ]; then
-            MEMLIM=$(cat /sys/fs/cgroup/memory/memory.max_usage_in_bytes)
+        if [ -f /sys/fs/cgroup/memory/memory.limit_in_bytes ]; then
+            MEMLIM=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)
             MEMLIM=$(expr $MEMLIM / 1024 / 1024)
             [ $MEMLIM -lt 512 ] && MEMLIM=512
             export MAX_HEAP_SIZE_XMX=${MEMLIM}m
