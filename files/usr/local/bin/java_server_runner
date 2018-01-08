@@ -7,6 +7,7 @@ function memory_limits {
             MEMLIM=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)
             MEMLIM=$(expr $MEMLIM / 1024 / 1024)
             [ $MEMLIM -lt 512 ] && MEMLIM=512
+            [ $MEMLIM -gt 8192 ] && MEMLIM=8192
             export MAX_HEAP_SIZE_XMX=${MEMLIM}m
             echo "INFO: Imposing memory limit of $MAX_HEAP_SIZE_XMX"
         else
