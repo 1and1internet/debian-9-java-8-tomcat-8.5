@@ -5,7 +5,9 @@ function memory_limits {
     if [ -z $MAX_HEAP_SIZE_XMX ]; then
         if [ -f /sys/fs/cgroup/memory/memory.max_usage_in_bytes ]; then
             MEMLIM=$(cat /sys/fs/cgroup/memory/memory.max_usage_in_bytes)
-            export MAX_HEAP_SIZE_XMX=$(expr $MEMLIM / 1024 )m
+            MEMLIM=$(expr $MEMLIM / 1024 / 1024)
+            [ $MEMLIM -lt 512 ] && MEMLIM=512
+            export MAX_HEAP_SIZE_XMX=${MEMLIM}m
             echo "INFO: Imposing memory limit of $MAX_HEAP_SIZE_XMX"
         else
             export MAX_HEAP_SIZE_XMX=512m
