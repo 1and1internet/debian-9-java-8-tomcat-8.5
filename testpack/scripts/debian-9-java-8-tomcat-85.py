@@ -71,7 +71,7 @@ class Test1and1Java8Tomcat85Image(unittest.TestCase):
     def test_tomcat(self):
         driver = webdriver.PhantomJS()
         driver.get("http://%s:8080/" % Test1and1Java8Tomcat85Image.container_ip)
-        self.assertEqual('Apache Tomcat/8.5.24', driver.title)
+        self.assertTrue(driver.title.find('Apache Tomcat/8.5.' > -1))
 
     # </tests to run>
 

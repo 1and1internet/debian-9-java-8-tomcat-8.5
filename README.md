@@ -17,4 +17,6 @@ In order to get the latest version of Tomcat 8 it has been downloaded from an of
 * apt-get install equivs
 * equivs-control tomcat8
 * _edit the file that gets created_
+	Package: tomcat8
+	Version: 8.5.1234
 * equivs-build tomcat8
