@@ -2,18 +2,21 @@ FROM 1and1internet/debian-9-java-8:latest
 
 COPY files /
 
-ARG TOMCAT_VER=8.5.27
-
 RUN apt-get update \
-    && apt-get install -y wget \
+    && apt-get install -y wget curl equivs \
     && cd /opt \
+    && TOMCAT_VER=$(curl -s http://mirror.ox.ac.uk/sites/rsync.apache.org/tomcat/tomcat-8/ | grep 8.5 | sed 's/.*v\([0-9.]*\).*/\1/') \
     && wget http://mirror.ox.ac.uk/sites/rsync.apache.org/tomcat/tomcat-8/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz \
     && tar zxvf apache-tomcat-${TOMCAT_VER}.tar.gz \
     && rm -rf apache-tomcat-${TOMCAT_VER}.tar.gz \
     && ln -sf /opt/apache-tomcat-${TOMCAT_VER} /usr/share/tomcat \
     && chmod +x /usr/share/tomcat/bin/*.sh /usr/local/bin/* \
-    && dpkg -i /opt/tomcat8_${TOMCAT_VER}_all.deb \
-    && apt-get remove wget \
+    && cd /tmp \
+    && equivs-control tomcat8 \
+    && sed -i -e "s/Package: .*/Package: tomcat8/" -e "s/# Version: .*/Version: ${TOMCAT_VER}/" tomcat8 \
+    && equivs-build tomcat8 \
+    && dpkg -i tomcat8_${TOMCAT_VER}_all.deb \
+    && apt-get remove wget curl equivs \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && chmod -R 777 /usr/share/tomcat /opt/tomcat
