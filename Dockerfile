@@ -2,7 +2,7 @@ FROM 1and1internet/debian-9-java-8:latest
 
 COPY files /
 
-ARG TOMCAT_VER=8.5.24
+ARG TOMCAT_VER=8.5.27
 
 RUN apt-get update \
     && apt-get install -y wget \
