@@ -9,15 +9,6 @@ from testpack_helper_library.unittests.dockertests import Test1and1Common
 
 
 class Test1and1Java8Tomcat85Image(Test1and1Common):
-    container_ip = None
-
-    @classmethod
-    def setUpClass(cls):
-        Test1and1Common.setUpClass()
-        details = docker.APIClient().inspect_container(container=Test1and1Common.container.id)
-        Test1and1Java8Tomcat85Image.container_ip = details['NetworkSettings']['IPAddress']
-        # Give the container time to spin up or we may fail a test due to a race
-        time.sleep(3)
 
     # <tests to run>
 
@@ -39,7 +30,7 @@ class Test1and1Java8Tomcat85Image(Test1and1Common):
 
     def test_tomcat(self):
         driver = webdriver.PhantomJS()
-        driver.get("http://%s:8080/" % Test1and1Java8Tomcat85Image.container_ip)
+        driver.get("http://%s:8080/" % Test1and1Common.container_ip)
         self.assertTrue(driver.title.find('Apache Tomcat/8.5.') > -1)
 
     # </tests to run>
