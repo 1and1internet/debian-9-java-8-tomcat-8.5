@@ -5,7 +5,7 @@ COPY files /
 RUN apt-get update \
     && apt-get install -y wget curl equivs \
     && cd /opt \
-    && TOMCAT_VER=$(curl -s http://mirror.ox.ac.uk/sites/rsync.apache.org/tomcat/tomcat-8/ | grep 8.5 | sed 's/.*v\([0-9.]*\).*/\1/') \
+    && TOMCAT_VER=$(curl -s http://mirror.ox.ac.uk/sites/rsync.apache.org/tomcat/tomcat-8/ | grep 8.5 | tail -1 | sed 's/.*v\([0-9.]*\).*/\1/') \
     && wget http://mirror.ox.ac.uk/sites/rsync.apache.org/tomcat/tomcat-8/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz \
     && tar zxvf apache-tomcat-${TOMCAT_VER}.tar.gz \
     && rm -rf apache-tomcat-${TOMCAT_VER}.tar.gz \
