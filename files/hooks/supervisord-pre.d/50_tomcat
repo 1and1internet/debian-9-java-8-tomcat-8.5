@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+function custom_opts {
+    if [ -f /etc/custom_java_opts ]; then
+        source /etc/custom_java_opts
+        export CUSTOM_OPTS=${CUSTOM_JAVA_OPTS}
+    else
+        memory_limits
+    fi
+}
+
 function memory_limits {
     # If limits have not been passed to us then try to discover them
     if [ -z $MAX_HEAP_SIZE_XMX ]; then
@@ -8,11 +17,11 @@ function memory_limits {
             MEMLIM=$(expr $MEMLIM / 1024 / 1024)
             [ $MEMLIM -lt 512 ] && MEMLIM=512
             [ $MEMLIM -gt 8192 ] && MEMLIM=8192
-            export MAX_HEAP_SIZE_XMX=${MEMLIM}m
-            echo "INFO: Imposing memory limit of $MAX_HEAP_SIZE_XMX"
+            export CUSTOM_OPTS="-Xmx${MEMLIM}m"
+            echo "INFO: Setting default memory limit of $MAX_HEAP_SIZE_XMX"
         else
-            export MAX_HEAP_SIZE_XMX=512m
-            echo "WARNING: Imposing default memory limit of $MAX_HEAP_SIZE_XMX"
+            export CUSTOM_OPTS="-Xmx512m"
+            echo "WARNING: Setting default memory limit of $MAX_HEAP_SIZE_XMX"
         fi
     fi
 }
@@ -31,7 +40,7 @@ function tomcat_config {
                  TC_ADMIN_GUI_PASS \
                  TC_ADMIN_SCRIPT_USER \
                  TC_ADMIN_SCRIPT_PASS \
-                 MAX_HEAP_SIZE_XMX
+                 CUSTOM_OPTS
     do
         eval value=\$$envar
         find /opt/tomcat/ -type f -exec sed -i "s/<$envar>/$value/g" {} \;
@@ -44,5 +53,5 @@ function tomcat_config {
     [ -d /var/www/webapps ] || cp -r /usr/share/tomcat/webapps /var/www/
 }
 
-memory_limits
+custom_opts
 tomcat_config
