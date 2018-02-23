@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 function custom_opts {
-    if [ -f /etc/custom_java_opts ]; then
-        source /etc/custom_java_opts
+    if [ -f /etc/configurability/custom/java_opts ]; then
+        source /etc/configurability/custom/java_opts
         export CUSTOM_OPTS=${CUSTOM_JAVA_OPTS}
     else
         memory_limits
