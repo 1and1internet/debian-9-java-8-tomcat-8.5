@@ -55,3 +55,4 @@ function tomcat_config {
 
 custom_opts
 tomcat_config
+gen_keystore_jks
