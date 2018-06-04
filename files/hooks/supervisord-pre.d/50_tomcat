@@ -21,7 +21,7 @@ function memory_limits {
             echo "INFO: Setting default memory limit of $MAX_HEAP_SIZE_XMX"
         else
             export CUSTOM_OPTS="-Xmx512m"
-            echo "WARNING: Setting default memory limit of $MAX_HEAP_SIZE_XMX"
+            echo "WARNING: Setting default memory limit of 512m"
         fi
     fi
 }
@@ -53,6 +53,11 @@ function tomcat_config {
     [ -d /var/www/webapps ] || cp -r /usr/share/tomcat/webapps /var/www/
 }
 
+function default_enable_8443 {
+    perl -p0i -e 's/<!--(\n    <Connector port="8443".*\n.*\n.*\n.*\n.*\n.*\n.*\n)    -->/\1/' /usr/share/tomcat/conf/server.xml
+}
+
+default_enable_8443
 custom_opts
 tomcat_config
 gen_keystore_jks
