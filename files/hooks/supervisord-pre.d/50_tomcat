@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-function default_opts {
-    export DEFAULT_OPTS="-Djava.awt.headless=true"
+function fixed_java_opts {
+    export FIXED_JAVA_OPTS="-Djava.awt.headless=true"
 }
 
 function custom_opts {
     if [ -f /etc/configurability/custom/java_opts ]; then
         source /etc/configurability/custom/java_opts
-        export CUSTOM_OPTS="${CUSTOM_JAVA_OPTS} ${DEFAULT_OPTS}"
+        export CUSTOM_OPTS="${CUSTOM_JAVA_OPTS} ${FIXED_JAVA_OPTS}"
     else
         memory_limits
     fi
@@ -62,7 +62,7 @@ function default_enable_8443 {
 }
 
 default_enable_8443
-default_opts
+fixed_java_opts
 custom_opts
 tomcat_config
 gen_keystore_jks
