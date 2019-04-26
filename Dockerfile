@@ -19,7 +19,8 @@ RUN apt-get update \
     && apt-get remove wget curl equivs \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
-    && chmod -R 777 /usr/share/tomcat /opt/tomcat
+    && chmod -R 777 /usr/share/tomcat /opt/tomcat \
+    && sed -i 's/\(.*GNOME.*\)/# \1/' /etc/java-8-openjdk/accessibility.properties
 
 ENV TC_MGR_GUI_USER=tcmgrgui \
     TC_MGR_GUI_PASS=tcmgrguipass \
