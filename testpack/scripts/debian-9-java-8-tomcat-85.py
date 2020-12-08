@@ -26,7 +26,7 @@ class Test1and1Java8Tomcat85Image(Test1and1Common):
         self.assertPackageIsInstalled("tomcat8")
 
     def test_tomcat(self):
-        driver = webdriver.PhantomJS()
+        driver = self.getChromeDriver()
         driver.get("http://%s:8080/" % Test1and1Common.container_ip)
         self.assertTrue(driver.title.find('Apache Tomcat/8.5.') > -1)
 
